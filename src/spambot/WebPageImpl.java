@@ -8,17 +8,18 @@ import java.net.MalformedURLException;
 
 public class WebPageImpl implements WebPage {
 
-	String urlString;
-	URL url;
-	Set<String> links;
-	Set<String> emails;
+	private String urlString;
+	private URL url;
+	private Set<String> links;
+	private Set<String> emails;
 	
 	public WebPageImpl(String str) throws MalformedURLException {
-		String urlString = str;
+		urlString = str;
 		System.out.println(urlString);
 		url = new URL(str);
 		links = new HashSet();
 		emails = new HashSet();
+		getContents();
 	}
 	
 	
@@ -26,7 +27,7 @@ public class WebPageImpl implements WebPage {
 	/**
 	* Reads in the webpage...
 	**/
-	public String getContents() {
+	private void getContents() {
 		InputStream inputStream = null;
 		DataInputStream dataInputStream;
 		String line;
@@ -45,18 +46,8 @@ public class WebPageImpl implements WebPage {
 				e.printStackTrace();
 			}
 		}
-		return "";
 	}
-	public static void main (String[] args) throws MalformedURLException {
-		WebPageImpl w = new WebPageImpl("http://www.dcs.bbk.ac.uk");
-		w.launch();
-	}
-	public void launch() {
-		getContents();
-		for (String next : links) {
-			System.out.println(next);
-		}
-	}
+
 	private void analyse (String line) {
 		for (int i = 0; i<line.length()-1; i++) {
 			if (line.charAt(i) == '@') {
@@ -64,10 +55,14 @@ public class WebPageImpl implements WebPage {
 			}
 			if (line.charAt(i) == '<'&&line.charAt(i+1)=='a') {
 				try {
-					if (line.substring(i,i+8).equals("<a href=")) {
+					if (line.substring(i).startsWith("<a href=")) {
 						String link = line.substring(i+9,line.indexOf('"', i+9));
-						if (!link.substring(0,4).equals("http")) {
-							links.add(urlString+"/"+link);
+						if (!link.startsWith("http")) {
+							if(urlString.endsWith("/")) {
+								links.add(urlString+link);
+							} else {
+								links.add(urlString+"/"+link);
+							}
 						} else {
 							links.add(link);
 						}
@@ -83,7 +78,7 @@ public class WebPageImpl implements WebPage {
      * Returns the URL that identifies this web page. * @return the URL that identifies this web page.
      */
     public String getUrl() {
-		return url.toString();
+		return urlString;
 	}
 
     /**
@@ -94,7 +89,7 @@ public class WebPageImpl implements WebPage {
      * @return all the links on this webpage.
      */
     public Set<String> getLinks() {
-		return null;
+		return links;
 	}
 
     /**
@@ -105,9 +100,20 @@ public class WebPageImpl implements WebPage {
      * @return all the emails on this webpage.
      */
     public Set<String> getEmails() {
-		return null;
+		return emails;
 	}
 
 // Also, implementing classes should override equals() to // ensure that p1.equals(p2)
 // returns true if and only if // p1.getUrl().equals(p2.getUrl()) returns true
+
+	public static void main (String[] args) throws MalformedURLException {
+		WebPageImpl w = new WebPageImpl("http://www.bbk.ac.uk/");
+		w.launch();
+	}
+	public void launch() {
+		getContents();
+		for (String next : links) {
+			System.out.println(next);
+		}
+	}
 }
