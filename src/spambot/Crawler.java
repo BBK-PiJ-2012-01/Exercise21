@@ -30,13 +30,13 @@ public interface Crawler extends Runnable {
 
     /**
      * If the crawler is waiting for a new seed (because it has just been
-     * initialised, or it has finished with its old seed) then this is true,
-     * and the crawler object is waiting.  Otherwise, false (and the crawler
+     * initialised, or it has finished with its old seed) then this is false,
+     * and the crawler object is waiting.  Otherwise, true (and the crawler
      * is running in another thread).
      *
-     * @return Whether the crawler is ready for another seed url.
+     * @return Whether the crawler is still crawling.
      */
-    boolean isReadyForSeed();
+    boolean isCrawling();
 
     /**
      * Sets the crawler's seed url.  If the crawler is running, this will hang
@@ -47,20 +47,20 @@ public interface Crawler extends Runnable {
     void setSeed(String seed);
 
     /**
-     * Gets the links recovered from the crawler, then clears them from the crawler.
+     * Gets the links recovered from the crawler.
      * This will hang until the crawler stops running.
      *
      * @return The links the crawler found.
      */
-    Set<String> popLinks();
+    Set<String> getLinks();
 
     /**
-     * Gets the emails recovered from the crawler, then clears them from the crawler.
+     * Gets the emails recovered from the crawler.
      * This will hang until the crawler stops running.
      *
      * @return The emails the crawler found.
      */
-    Set<String> popEmails();
+    Set<String> getEmails();
 
     /**
      * When the crawler has finished crawling, it will notify the spam_bot
