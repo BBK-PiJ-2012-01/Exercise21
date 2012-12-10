@@ -21,7 +21,7 @@ class DummyWebPage implements WebPage {
 
     public DummyWebPage(String url) {
         this.url = url;
-        System.out.println("There are " + links.size() + " links");
+
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

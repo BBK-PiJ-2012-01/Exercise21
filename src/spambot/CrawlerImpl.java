@@ -2,6 +2,7 @@ package spambot;
 
 import spambot.dummy.WebPageFactory;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +16,7 @@ import java.util.Set;
  */
 public class CrawlerImpl implements Crawler {
     private Object status_lock = new Object();
-    private boolean crawling = false;
+    private boolean crawling = true;
     private String seed;
     private Set<String> links = new HashSet<String>();
     private Set<String> emails = new HashSet<String>();
@@ -58,7 +59,7 @@ public class CrawlerImpl implements Crawler {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
 
         while(true) {
             synchronized (status_lock) {
@@ -68,26 +69,26 @@ public class CrawlerImpl implements Crawler {
             }
 
             if (seed != null) {
-                synchronized (this) {
                     WebPage page = factory.create(seed);
                     links = page.getLinks();
                     emails = page.getEmails();
-                    System.out.println("Crawler: there are " + links.size() + " links");
-                }
+                    System.out.println("Crawler: there are " + emails.size() + " emails");
             }
             waitForAnotherSeed();
         }
     }
 
     private synchronized void waitForAnotherSeed() {
-        if (spam_bot != null)
-            spam_bot.notifyAll();
-
-        finished_with_seed = true;
-
         synchronized (status_lock) {
             crawling = false;
         }
+
+        if (spam_bot != null)
+            synchronized (spam_bot) {
+                spam_bot.notifyAll();
+            }
+
+        finished_with_seed = true;
 
         while (finished_with_seed) {
             try {

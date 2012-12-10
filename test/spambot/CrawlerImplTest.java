@@ -6,6 +6,7 @@ import spambot.dummy.DummySpambot;
 import spambot.dummy.WebPageFactory;
 
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.Set;
 
 
@@ -35,11 +36,12 @@ public class CrawlerImplTest {
 
     @Test
     public void testCrawlerDoesSomething() throws Exception {
-        assertFalse(crawler.isCrawling());
         crawler.setSeed(url);
         new Thread(crawler).start();
         Thread.sleep(100);
         assertTrue(crawler.isCrawling());
+        Thread.sleep(1000);
+        assertFalse(crawler.isCrawling());
     }
 
     @Test(timeout = waiting_timeout)
@@ -57,9 +59,10 @@ public class CrawlerImplTest {
     public void testGetLinks() throws Exception {
         crawler.setSeed(url);
         runCrawlerToCompletion();
-        System.out.println("Found " + crawler.getLinks().size() + " links in crawler");
-        assertFalse(crawler.getLinks().isEmpty());
-        assertEquals(factory.create(url).getLinks(), crawler.getLinks());
+        //System.out.println("Found " + crawler.getLinks().size() + " links in crawler");
+        //assertFalse(crawler.getLinks().isEmpty());
+
+        assertEquals(3, crawler.getLinks().size());
     }
 
     @Test
@@ -71,9 +74,10 @@ public class CrawlerImplTest {
     public void testGetEmails() throws Exception {
         crawler.setSeed(url);
         runCrawlerToCompletion();
-
-        assertFalse(crawler.getEmails().isEmpty());
-        assertEquals(factory.create(url).getEmails(), crawler.getEmails());
+        //System.out.println("Found " + crawler.getEmails().size() + " emails in crawler");
+        //assertEquals(3, crawler.getLinks().size());
+        System.out.println("Checking emails size...");
+        assertEquals(3, crawler.getEmails().size());
     }
 
     @Test(timeout = waiting_timeout)
