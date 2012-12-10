@@ -5,6 +5,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class WebPageImpl implements WebPage {
 
@@ -12,10 +15,11 @@ public class WebPageImpl implements WebPage {
 	private URL url;
 	private Set<String> links;
 	private Set<String> emails;
+	private final static Pattern EMAIL_REG_EX = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
+	
 	
 	public WebPageImpl(String str) throws MalformedURLException {
 		urlString = str;
-		System.out.println(urlString);
 		url = new URL(str);
 		links = new HashSet();
 		emails = new HashSet();
@@ -49,10 +53,14 @@ public class WebPageImpl implements WebPage {
 	}
 
 	private void analyse (String line) {
+		Matcher m = EMAIL_REG_EX.matcher(line);
+		while (m.find()) {
+			emails.add( m.group(1));
+		}	
+			
+			
 		for (int i = 0; i<line.length()-1; i++) {
-			if (line.charAt(i) == '@') {
-				System.out.println("FOUND AN AT");
-			}
+			
 			if (line.charAt(i) == '<'&&line.charAt(i+1)=='a') {
 				try {
 					if (line.substring(i).startsWith("<a href=")) {
@@ -107,12 +115,15 @@ public class WebPageImpl implements WebPage {
 // returns true if and only if // p1.getUrl().equals(p2.getUrl()) returns true
 
 	public static void main (String[] args) throws MalformedURLException {
-		WebPageImpl w = new WebPageImpl("http://www.bbk.ac.uk/");
+		WebPageImpl w = new WebPageImpl("http://vili.dcs.bbk.ac.uk/dept/staffperson05.asp?name=sergut");
 		w.launch();
 	}
 	public void launch() {
 		getContents();
 		for (String next : links) {
+			System.out.println(next);
+		}
+		for (String next : emails) {
 			System.out.println(next);
 		}
 	}
