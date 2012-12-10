@@ -2,19 +2,23 @@ package spambot;
 
 import java.io.*;
 import java.util.Set;
+import java.util.HashSet;
 import java.net.URL;
 import java.net.MalformedURLException;
 
 public class WebPageImpl implements WebPage {
 
-	URL url = null;
+	String urlString;
+	URL url;
+	Set<String> links;
+	Set<String> emails;
 	
-	public WebPageImpl(String str) {
-		try {
-			url = new URL("http://"+str);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+	public WebPageImpl(String str) throws MalformedURLException {
+		String urlString = str;
+		System.out.println(urlString);
+		url = new URL(str);
+		links = new HashSet();
+		emails = new HashSet();
 	}
 	
 	
@@ -30,7 +34,7 @@ public class WebPageImpl implements WebPage {
 			inputStream = url.openStream();
 			dataInputStream = new DataInputStream(new BufferedInputStream(inputStream));
 			while ((line = dataInputStream.readLine()) != null) {
-				System.out.println(line);
+				analyse(line);
 			}
 		} catch (IOException e) {
 			 e.printStackTrace();
@@ -43,20 +47,43 @@ public class WebPageImpl implements WebPage {
 		}
 		return "";
 	}
-	public static void main (String[] args) {
-		WebPageImpl w = new WebPageImpl("www.dcs.bbk.ac.uk");
+	public static void main (String[] args) throws MalformedURLException {
+		WebPageImpl w = new WebPageImpl("http://www.dcs.bbk.ac.uk");
 		w.launch();
 	}
 	public void launch() {
 		getContents();
+		for (String next : links) {
+			System.out.println(next);
+		}
 	}
-
+	private void analyse (String line) {
+		for (int i = 0; i<line.length()-1; i++) {
+			if (line.charAt(i) == '@') {
+				System.out.println("FOUND AN AT");
+			}
+			if (line.charAt(i) == '<'&&line.charAt(i+1)=='a') {
+				try {
+					if (line.substring(i,i+8).equals("<a href=")) {
+						String link = line.substring(i+9,line.indexOf('"', i+9));
+						if (!link.substring(0,4).equals("http")) {
+							links.add(urlString+"/"+link);
+						} else {
+							links.add(link);
+						}
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+				}
+			}
+			
+		}
+	}
 
     /**
      * Returns the URL that identifies this web page. * @return the URL that identifies this web page.
      */
     public String getUrl() {
-		return "some url";
+		return url.toString();
 	}
 
     /**
