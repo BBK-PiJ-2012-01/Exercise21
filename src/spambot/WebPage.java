@@ -28,5 +28,7 @@ public interface WebPage {
      * @return all the emails on this webpage.
      */
     Set<String> getEmails();
-// Also, implementing classes should override equals() to // ensure that p1.equals(p2) returns true if and only if // p1.getUrl().equals(p2.getUrl()) returns true
+
+// Also, implementing classes should override equals() to // ensure that p1.equals(p2)
+// returns true if and only if // p1.getUrl().equals(p2.getUrl()) returns true
 }

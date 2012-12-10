@@ -1,5 +1,8 @@
 package spambot;
 
+import java.net.URL;
+import java.util.Set;
+
 /**
  * A crawler is typically an autonomous agent that runs in a separate thread.
  * In terms of behaviour there are no specific requirements, hence the absence
@@ -19,9 +22,51 @@ package spambot;
  * In a first stage of design, it may help to have only one active crawler (i.e.
  * one thread). Once the functionality is ready, you should be able to span several
  * crawlers in parallel, all of them sharing the information described above. You
- * should at least launch a crawler per processor in your machine2, and possibly
+ * should at least launch a crawler per processor in your machine, and possibly
  * more, because I/O waits over the network connection will make your crawlers
  * waste a lot of time.
  */
-public interface Crawler {
+public interface Crawler extends Runnable {
+
+    /**
+     * If the crawler is waiting for a new seed (because it has just been
+     * initialised, or it has finished with its old seed) then this is true,
+     * and the crawler object is waiting.  Otherwise, false (and the crawler
+     * is running in another thread).
+     *
+     * @return Whether the crawler is ready for another seed url.
+     */
+    boolean isReadyForSeed();
+
+    /**
+     * Sets the crawler's seed url.  If the crawler is running, this will hang
+     * until it is done (to avoid this, check that "crawler.isReadyForSeed()").
+     *
+     * @param seed The new seed url.
+     */
+    void setSeed(String seed);
+
+    /**
+     * Gets the links recovered from the crawler, then clears them from the crawler.
+     * This will hang until the crawler stops running.
+     *
+     * @return The links the crawler found.
+     */
+    Set<String> popLinks();
+
+    /**
+     * Gets the emails recovered from the crawler, then clears them from the crawler.
+     * This will hang until the crawler stops running.
+     *
+     * @return The emails the crawler found.
+     */
+    Set<String> popEmails();
+
+    /**
+     * When the crawler has finished crawling, it will notify the spam_bot
+     *
+     * @param spam_bot
+     */
+    void setSpamBot(SpamBot spam_bot);
+
 }
