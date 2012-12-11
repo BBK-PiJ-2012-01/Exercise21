@@ -10,11 +10,7 @@ import spambot.WebPage;
  * To change this template use File | Settings | File Templates.
  */
 public class WebPageFactory {
-    boolean test = false;
-
-    private WebPageFactory(boolean test) {
-        this.test = test;
-    }
+    private boolean test = false;
 
     public static WebPageFactory getReal() {
         return new WebPageFactory(false);
@@ -24,11 +20,15 @@ public class WebPageFactory {
         return new WebPageFactory(true);
     }
 
+
+    private WebPageFactory(boolean test) {
+        this.test = test;
+    }
+
     public WebPage create(String url) {
         if (test)
             return new DummyWebPage(url);
         else
             throw new UnsupportedOperationException("Real web page not implemented yet");
     }
-
 }

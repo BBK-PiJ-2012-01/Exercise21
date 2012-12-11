@@ -98,8 +98,5 @@ public class CrawlerImpl implements Crawler {
                 System.out.println("Crawler was interrupted...");
             }
         }
-
     }
-
-
 }
