@@ -32,7 +32,15 @@ public interface SpamBot {
      * @param count the number of threads (i.e. crawlers) to start in parallel
      */
     void setThreads(int count);
-
+    
+    /**
+     * Sets a timeout for scanning the website.  A negative timeout
+     * disables it (default is -1).
+     * 
+     * @param timeout_ms Timeout in ms.
+     */
+    void setTimeout(int timeout_ms);
+    
     /**
      * Initiates the scanning process.
      */

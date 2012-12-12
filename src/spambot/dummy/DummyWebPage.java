@@ -26,9 +26,10 @@ public class DummyWebPage implements WebPage {
     public final static Set<String> ALL_EMAILS = new HashSet<String>(Arrays.asList(new String[]{"first@first.com", "first@second.com", "first@third.com",
             "second@first.com", "second@second.com", "second@third.com", "third@first.com", "third@second.com", "third@third.com",
             "init@first.com", "init@second.com", "init@third.com"}));
+    public final static Set<String> STARTING_EMAILS = new HashSet<String>(Arrays.asList(new String[]{"init@first.com", "init@second.com", "init@third.com"}));
     private final String url;
     private Set<String> links = new HashSet<String>(Arrays.asList(new String[]{"http://correct.com/first", "http://empty.com", "malformed"}));
-    private Set<String> emails = new HashSet<String>(Arrays.asList(new String[]{"init@first.com", "init@second.com", "init@third.com"}));
+    private Set<String> emails = new HashSet<String>(STARTING_EMAILS);
 
     public DummyWebPage(String url) throws MalformedURLException {
         this.url = url;

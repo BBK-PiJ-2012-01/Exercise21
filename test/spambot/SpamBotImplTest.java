@@ -98,6 +98,16 @@ public class SpamBotImplTest {
         assertEquals(1, links_containing_three.size());
     }
     
+    @Test
+    public void testTimeout() throws Exception {
+        spam_bot.setTimeout(150);
+        spam_bot.setSeed(url);
+        spam_bot.scanSite();
+        
+        System.out.println("Spambot got emails: " + spam_bot.getEMails());
+        assertEquals(DummyWebPage.STARTING_EMAILS, spam_bot.getEMails());
+    }
+    
     private List<String> getLinks() {
         Field links_field;
         List<String> links;
@@ -140,4 +150,6 @@ public class SpamBotImplTest {
         
         return result;
     }
+    
+    
 }

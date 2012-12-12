@@ -35,6 +35,7 @@ public class SpamBotImpl implements SpamBot {
     private Queue<Crawler> crawlers = new LinkedList<Crawler>();
     private Set<String> links = new HashSet<String>();
     private Set<String> emails = new HashSet<String>();
+    private int timeout_ms = -1;
 
     public SpamBotImpl(CrawlerFactory factory) {
         this.factory = factory;
@@ -108,6 +109,7 @@ public class SpamBotImpl implements SpamBot {
 
         untried_links.add(seedUrl);
         int crawlers_crawling;
+        long start_time = System.currentTimeMillis();
 
         do {
             crawlers_crawling = 0;
@@ -161,12 +163,26 @@ public class SpamBotImpl implements SpamBot {
             if (crawlers_crawling == crawler_count || (untried_links.isEmpty() && crawlers_crawling > 0)) {
                 // ...wait for one of them to finish and notify 'this'.
                 try {
-                    wait();
+                    if (timeout_ms > 0) {
+                        // If no timeout is set, wait forever:
+                        wait();
+                    } else {
+                        // otherwise, wait only until the timeout
+                        long remaining_time = timeout_ms - (System.currentTimeMillis() - start_time);
+                        if (remaining_time > 0)
+                            wait();
+                    }
                 } catch (InterruptedException e) {
                     // If interrupted, the do-while loop I'm already in will do nothing
                     // except wait() again, so there's no need for another do-while here.
                     System.out.println("Crawler interrupted, not a problem.");
                 }
+            }
+            
+            // If we've exceeded the timeout, don't try more links (wait for
+            // crawlers to end)
+            if (timeout_ms > 0 && System.currentTimeMillis() - start_time > timeout_ms) {
+                untried_links.clear();
             }
 
         } while(!untried_links.isEmpty() || crawlers_crawling != 0);
@@ -214,6 +230,7 @@ public class SpamBotImpl implements SpamBot {
     public static void main(String[] args) {
         String input, seed = "";
         int max_threads;
+        int timeout;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         do {
@@ -232,6 +249,21 @@ public class SpamBotImpl implements SpamBot {
             } catch (IOException e) {
                 System.out.println("IOExcepion caught, try again...");
                 continue;
+            } catch (java.lang.NumberFormatException e) {
+                System.out.println("That's not a number!");
+                continue;
+            }
+            
+            System.out.print("Enter maximum time (in ms) to run for (negative for no timeout): ");
+            try {
+                input = br.readLine();
+                timeout = Integer.valueOf(input);
+            } catch (IOException e) {
+                System.out.println("IOExcepion caught, try again...");
+                continue;
+            } catch (java.lang.NumberFormatException e) {
+                System.out.println("That's not a number!");
+                continue;
             }
 
             SpamBot spam_bot = new SpamBotImpl(CrawlerFactory.getReal());
@@ -243,6 +275,7 @@ public class SpamBotImpl implements SpamBot {
             }
 
             spam_bot.setThreads(max_threads);
+            spam_bot.setTimeout(timeout);
 
             System.out.format("Starting to scan website '%s' with at most %d crawlers\n", seed, max_threads);
             long start = System.currentTimeMillis();
@@ -257,5 +290,10 @@ public class SpamBotImpl implements SpamBot {
 
 
         } while (!seed.isEmpty());
+    }
+
+    @Override
+    public void setTimeout(int timeout_ms) {
+        this.timeout_ms = timeout_ms;
     }
 }

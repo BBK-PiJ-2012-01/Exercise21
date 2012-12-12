@@ -58,4 +58,9 @@ public class DummySpambot implements SpamBot {
             System.out.println("Crawler ended");
         }
     }
+
+    @Override
+    public void setTimeout(int timeout_ms) {
+        
+    }
 }
