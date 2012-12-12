@@ -1,6 +1,5 @@
 package spambot;
 
-import java.net.URL;
 import java.util.Set;
 
 /**
@@ -63,10 +62,9 @@ public interface Crawler extends Runnable {
     Set<String> getEmails();
 
     /**
-     * When the crawler has finished crawling, it will notify the spam_bot
-     *
-     * @param spam_bot
+     * Stops the crawler thread.  If the crawler is still running, this will hang
+     * until it finishes.
      */
-    void setSpamBot(SpamBot spam_bot);
+    void kill();
 
 }

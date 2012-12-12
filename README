@@ -1,1 +1,25 @@
 Team project - making a spambot!
+
+WebPageImpl to-do list:
+
+ - finally clause in getContents crashes (throws NullPointerException
+because inputStream is null)
+
+ - Timeout on downloading large files?  Can either do this in WebPageImpl or CrawlerImpl.
+ If there's a way for URL class to do this then use that.
+
+ - Check that URL points to an html file before opening it?
+
+ - It is normal for webpages to have bad links.  Can we change it so
+ we don't print a stack trace every time we find one?  (it's in getContents)
+
+ - Make a test class!!!  The main method should only be used for interactive
+ testing (which probably isn't needed).
+
+ - Add @Override to all methods overriding abstract methods from WebPage
+
+ - Remove javadoc strings from methods overriding abstract methods from
+ WebPage (javadoc automatically uses the interface's comments unless
+ overidden in the subclass)
+
+ - Add javadoc to all non-overriden methods and to the class
