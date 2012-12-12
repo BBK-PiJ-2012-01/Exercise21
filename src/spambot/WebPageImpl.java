@@ -75,6 +75,10 @@ public class WebPageImpl implements WebPage {
 			}
 		} catch (IOException e) {
 			 e.printStackTrace();
+                         return;
+                } catch (NullPointerException e) {
+			 e.printStackTrace();
+                         return;
 		} finally {
 			try {
 				inputStream.close();
