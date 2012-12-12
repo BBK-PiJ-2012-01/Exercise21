@@ -6,24 +6,9 @@ import spambot.WebPageImpl;
 
 public class WebPageImplTest {
 	@Test
-	public void testsGetContents() {
+	public void testsItAll() throws Exception {
 		WebPageImpl wp = new WebPageImpl("www.google.com");
-		wp.getContents();
+                wp.getContents();
 	}
-	@Test
-	public void testsAnalyse() {
 
-	}
-	@Test
-	public void testsGetUrl() {
-
-	}
-	@Test
-	public void testsGetLinks() {
-
-	}
-	@Test
-	public void testsGetEmails() {
-
-	}
 }
