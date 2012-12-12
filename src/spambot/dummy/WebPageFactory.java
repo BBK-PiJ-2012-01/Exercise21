@@ -6,12 +6,14 @@ import spambot.WebPageImpl;
 import java.net.MalformedURLException;
 
 /**
+ * A factory class for creating WebPage objects.
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012
  * Time: 15:14
  *
- * This is a factory class for creating WebPage classes.  It can return WebPageImpl
+ * This is a factory class for creating WebPage objects.  It can return WebPageImpl
  * or DummyWebPage (for testing) classes.
  */
 public class WebPageFactory {

@@ -8,12 +8,12 @@ import spambot.dummy.WebPageFactory;
 import static org.junit.Assert.*;
 
 /**
+ * Tests the CrawlerImpl class.
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012
  * Time: 13:27
- *
- * Tests the CrawlerImpl class.
  */
 public class CrawlerImplTest {
     private Crawler crawler;

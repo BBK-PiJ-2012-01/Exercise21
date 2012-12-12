@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.util.Set;
 
 /**
+ * A dummy SpamBot (for testing).
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012

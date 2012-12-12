@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A dummy WebPage (for testing).
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012

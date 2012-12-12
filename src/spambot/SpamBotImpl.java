@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.*;
 
 /**
+ * Implementation of SpamBot.
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012

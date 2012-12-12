@@ -10,12 +10,12 @@ import java.net.MalformedURLException;
 import static org.junit.Assert.*;
 
 /**
+ * Tests the SpamBotImpl class.
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 10/12/2012
  * Time: 16:57
- *
- * Tests the SpamBotImpl class.
  */
 public class SpamBotImplTest {
     private SpamBot spam_bot;

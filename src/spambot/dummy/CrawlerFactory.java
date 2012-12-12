@@ -5,6 +5,8 @@ import spambot.CrawlerImpl;
 import spambot.SpamBot;
 
 /**
+ * A Factory class that creates Crawler objects.
+ *
  * Created with IntelliJ IDEA.
  * User: Sam Wright
  * Date: 11/12/2012
