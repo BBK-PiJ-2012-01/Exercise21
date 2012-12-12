@@ -1,13 +1,15 @@
 package spambot;
 
-import java.io.*;
-import java.util.Set;
-import java.util.HashSet;
-import java.net.URL;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.regex.Pattern;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebPageImpl implements WebPage {
 

@@ -1,13 +1,18 @@
 package spambot.dummy;
 
 import spambot.WebPage;
+import spambot.WebPageImpl;
+
+import java.net.MalformedURLException;
 
 /**
  * Created with IntelliJ IDEA.
- * User: eatmuchpie
+ * User: Sam Wright
  * Date: 10/12/2012
  * Time: 15:14
- * To change this template use File | Settings | File Templates.
+ *
+ * This is a factory class for creating WebPage classes.  It can return WebPageImpl
+ * or DummyWebPage (for testing) classes.
  */
 public class WebPageFactory {
     private boolean test = false;
@@ -25,10 +30,10 @@ public class WebPageFactory {
         this.test = test;
     }
 
-    public WebPage create(String url) {
+    public WebPage create(String url) throws MalformedURLException {
         if (test)
             return new DummyWebPage(url);
         else
-            throw new UnsupportedOperationException("Real web page not implemented yet");
+            return new WebPageImpl(url);
     }
 }

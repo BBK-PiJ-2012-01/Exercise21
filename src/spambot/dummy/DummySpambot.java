@@ -8,10 +8,14 @@ import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
- * User: eatmuchpie
+ * User: Sam Wright
  * Date: 10/12/2012
  * Time: 15:23
- * To change this template use File | Settings | File Templates.
+ *
+ * This dummy spambot has a method 'waitForCrawlerToFinish' which waits
+ * for the crawler to notify this.  Otherwise it hangs.
+ *
+ * It is used in testing the CrawlerImpl class.
  */
 public class DummySpambot implements SpamBot {
 
@@ -37,6 +41,11 @@ public class DummySpambot implements SpamBot {
         return null;
     }
 
+    /**
+     * Waits for the given crawler to stop crawling and notify this spambot.
+     *
+     * @param crawler The crawler to wait for.
+     */
     public synchronized void waitForCrawlerToFinish(Crawler crawler) {
         while (crawler.isCrawling()) {
             try {
