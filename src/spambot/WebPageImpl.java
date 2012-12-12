@@ -55,10 +55,20 @@ public class WebPageImpl implements WebPage {
                         return;
 		}
 		try {
-			dataInputStream = new DataInputStream(new BufferedInputStream(inputStream));
-			String firstLine = dataInputStream.readLine().toLowerCase();
-			if (firstLine.startsWith("<!doctype html")
-					|| firstLine.startsWith("<html") ) {
+                    dataInputStream = new DataInputStream(new BufferedInputStream(inputStream));
+                    
+                    StringBuilder sbuf = new StringBuilder();
+                    for (int i = 0; i < 5; ++i) {
+                        sbuf.append(dataInputStream.readLine().toLowerCase());
+                    }
+                    String first_five_lines = sbuf.toString();
+                    
+			
+			
+			if (first_five_lines.contains("<!doctype html")
+					|| first_five_lines.contains("<html") ) {
+                                analyse(first_five_lines);
+                            
 				while ((line = dataInputStream.readLine()) != null) {
 					analyse(line);
 				}

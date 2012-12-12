@@ -21,6 +21,7 @@ import spambot.SpamBot;
  */
 public class StreamFactory {
     private boolean test = false;
+    public static final String STARTING_URL = "http://www.one.com";
 
     public static StreamFactory getReal() {
         return new StreamFactory(false);
@@ -37,7 +38,7 @@ public class StreamFactory {
 
     public InputStream create(URL url) throws IOException {
         if (test) {
-            if (url.getPath().equals("http://www.one.com")) {
+            if (url.getPath().equals(STARTING_URL)) {
                 return getStream("<html><a href=www.google.com></a></html>");
             } else if (url.getPath().equals("http://www.two.com")) {
                 return getStream("<html><A HREF=\"mailto:test@test.com\">");
