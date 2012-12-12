@@ -4,22 +4,20 @@
  */
 package spambot.dummy;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import spambot.Crawler;
 import spambot.CrawlerImpl;
 import spambot.SpamBot;
 
 /**
- * A Factory class that creates Crawler objects.
+ * A Factory class that creates Stream objects.
  *
- * Created with IntelliJ IDEA.
- * User: Sam Wright
- * Date: 11/12/2012
- * Time: 15:55
- *
- * Factory class for creating Crawler implementations.  Currently only
- * used to specify whether the CrawlerImpl uses the DummyWebPage or the
- * WebPageImpl class (ie. for testing purposes).
+ * Factory class for creating Streams.
+ * Used to specify whether the WebPageImpl uses fake data
+ * or a real stream (ie. for testing purposes).
  */
 public class StreamFactory {
     private boolean test = false;
@@ -37,14 +35,20 @@ public class StreamFactory {
         this.test = test;
     }
 
-    public InputStream create(String url) {
+    public InputStream create(URL url) throws IOException {
         if (test) {
-            // TODO: return test input stream
+            if (url.getPath().equals("http://www.one.com")) {
+                return getStream("<html><a href=www.google.com></a></html>");
+            } else if (url.getPath().equals("http://www.two.com")) {
+                return getStream("<html><A HREF=\"mailto:test@test.com\">");
+            } else if (url.getPath().equals(
+                        "<!DOCTYPE html PUB...>www.google.co.uk"));
+                return getStream("something_long<A HREF=\"www.google.com\">");
         } else {
-            // TODO: return real input stream (from url)
+            return url.openStream();
         }
-        
-        // TODO: delete me
-        return null;
+    }
+    private InputStream getStream(String str) {
+        return new ByteArrayInputStream(str.getBytes());
     }
 }

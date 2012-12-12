@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.net.URLConnection;
+import spambot.dummy.StreamFactory;
 
 /**
  * An implementation of WebPage which reads in a webpage (URL string) and picks
@@ -23,16 +24,19 @@ public class WebPageImpl implements WebPage {
 	private final Set<String> links;
 	private final Set<String> emails;
 	private final static Pattern EMAIL_REG_EX = Pattern.compile("[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})");
-
+        private final StreamFactory factory;
+        
 	/**
 	* @param str the string of the url for the web page
 	**/
-	public WebPageImpl(String str) throws MalformedURLException {
+	public WebPageImpl(String str, StreamFactory factory) throws MalformedURLException {
 		urlString = str;
 		url = new URL(str);
 		links = new HashSet();
 		emails = new HashSet();
-		getContents();
+		this.factory = factory;
+                getContents();
+                
 	}
 	
 	
@@ -41,13 +45,14 @@ public class WebPageImpl implements WebPage {
 	* Reads in the webpage and calls analyse.
 	**/
 	private void getContents() {
-		InputStream inputStream = null;
+		InputStream inputStream;
 		DataInputStream dataInputStream;
 		String line;
 		try {
-			inputStream = url.openStream();
+			inputStream = factory.create(url);
 		} catch (IOException e) {
 			System.out.println("Couldn't access "+urlString);
+                        return;
 		}
 		try {
 			dataInputStream = new DataInputStream(new BufferedInputStream(inputStream));
@@ -116,7 +121,7 @@ public class WebPageImpl implements WebPage {
 	}
 
 	public static void main (String[] args) throws MalformedURLException {
-		WebPageImpl w = new WebPageImpl("http://dd710.com/email.htm");
+		WebPageImpl w = new WebPageImpl("http://www.google.com");
 		w.launch();
 	}
 	public void launch() {
