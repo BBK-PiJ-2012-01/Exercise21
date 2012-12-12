@@ -46,7 +46,7 @@ public class SpamBotImpl implements SpamBot {
         // Check the seedUrl is valid
         new URL(seedUrl);
 
-        this.seedUrl = seedUrl;
+        this.seedUrl = condenseUrl(seedUrl);
     }
 
     @Override
@@ -95,12 +95,13 @@ public class SpamBotImpl implements SpamBot {
     @Override
     public synchronized void scanSite() {
         Queue<String> untried_links = new LinkedList<String>();
-        Set<String> all_links = new HashSet<String>();
-
+        Set<String> new_links = new HashSet<String>();
+        List<String> reformatted_new_links = new LinkedList<String>();
+    
         int index_of_final_slash = seedUrl.lastIndexOf('/');
         String base_url;
 
-        if (index_of_final_slash <= "http://".length())
+        if (index_of_final_slash <= "https://".length())
             base_url = seedUrl;
         else
             base_url = seedUrl.substring(0, index_of_final_slash);
@@ -110,15 +111,15 @@ public class SpamBotImpl implements SpamBot {
 
         do {
             crawlers_crawling = 0;
-            all_links.clear();
-            all_links.addAll(links);
-
+            new_links.clear();
+            reformatted_new_links.clear();
+            
             for (Crawler crawler : crawlers){
                 if (crawler.isCrawling()) {
                     ++crawlers_crawling;
                 } else {
                     // Get data from crawler
-                    all_links.addAll(crawler.getLinks());
+                    new_links.addAll(crawler.getLinks());
                     emails.addAll(crawler.getEmails());
 
                     // If there are links to try, give one to the crawler
@@ -134,18 +135,26 @@ public class SpamBotImpl implements SpamBot {
                     }
                 }
             }
-
-            // Remove all tried links from 'all_links'
-            all_links.removeAll(links);
-
-            // Add remaining links which start with base_url to 'untried_links'...
-            for (String link : all_links) {
-                if (link.startsWith(base_url))
-                    untried_links.add(link);
+            
+            // For all 'new_links' which start with the 'base_url',
+            // Condense multiple '/' (eg. "http://google.com///dir//2/"
+            // becomes "http://google.com/dir/2") and put into
+            // 'reformatted_new_links'.
+            
+            for (String link : new_links) {
+                if (link.startsWith(base_url)) {
+                    reformatted_new_links.add(condenseUrl(link));
+                }
             }
+            
+            // Remove all tried links from 'reformatted_new_links'
+            reformatted_new_links.removeAll(links);
 
-            // ... and to 'all_links' (so the next loop knows not to try these again).
-            links.addAll(all_links);
+            // Add remaining links to 'untried_links'...
+            untried_links.addAll(reformatted_new_links);
+
+            // ... and to 'new_links' (so the next loop knows not to try these again).
+            links.addAll(reformatted_new_links);
 
             // If all crawlers are crawling, or there are NO MORE links to try but some crawlers are
             // still crawling (and thus could return new links) ...
@@ -161,6 +170,35 @@ public class SpamBotImpl implements SpamBot {
             }
 
         } while(!untried_links.isEmpty() || crawlers_crawling != 0);
+    }
+    
+    /**
+     * Removes duplicate '/' from the given url.
+     * 
+     * @param url The url to condense.
+     * @return The condensed url.
+     */
+    public String condenseUrl(String url) {
+        StringBuilder sbuf = new StringBuilder();
+        sbuf.append(url.substring(0, 10));
+        boolean found_slash = false;
+        
+        for (char ch : url.substring(10).toCharArray()) {
+            if (ch == '/') {
+                if (!found_slash) {
+                    found_slash = true;
+                    sbuf.append(ch);
+                }
+            } else {
+                sbuf.append(ch);
+                found_slash = false;
+            }
+        }
+        
+        if (url.endsWith("/"))
+            sbuf.deleteCharAt(sbuf.length() - 1);
+        
+        return sbuf.toString();
     }
 
     @Override

@@ -41,12 +41,14 @@ public class DummyWebPage implements WebPage {
 
         if (url.equals("http://correct.com/first")) {
             links.add("http://correct.com/second");
-            links.add("http://correct.com/third");
+            links.add("http://correct.com//third/");
 
             emails.add("first@first.com");
             emails.add("first@second.com");
             emails.add("first@third.com");
         } else if (url.equals("http://correct.com/second")) {
+            links.add("http://correct.com///third////");
+            
             emails.add("second@first.com");
             emails.add("second@second.com");
             emails.add("second@third.com");

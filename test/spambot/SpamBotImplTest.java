@@ -1,11 +1,18 @@
 package spambot;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 import spambot.dummy.CrawlerFactory;
 import spambot.dummy.DummyWebPage;
 
 import java.net.MalformedURLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 
@@ -72,5 +79,65 @@ public class SpamBotImplTest {
         //assertTrue(spam_bot.getEMails().size() > 0);
     }
 
-
+    @Test
+    public void testCondenseUrl() throws Exception {
+        assertEquals("http://bob.com/a/b/c", condenseUrl("http://bob.com////a//b/c/"));
+    }
+    
+    @Test
+    public void testCondenseUrlUsage() throws Exception {
+        spam_bot.setSeed(url);
+        spam_bot.scanSite();
+        
+        List<String> links_containing_three = new LinkedList<String>();
+        for (String link : getLinks()) {
+            if (link.contains("three"))
+                links_containing_three.add(link);
+        }
+        
+        assertEquals(1, links_containing_three.size());
+    }
+    
+    private List<String> getLinks() {
+        Field links_field;
+        List<String> links;
+        
+        try {
+            links_field = SpamBotImpl.class.getField("links");
+            links_field.setAccessible(true);
+            links = (List<String>) links_field.get(spam_bot);
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("Bad argument in getting links", ex);
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException("Couldn't access links", ex);
+        } catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Couldn't find links", ex);
+        } catch (SecurityException ex) {
+            throw new RuntimeException("Couldn't access links", ex);
+        }
+        
+        return links;
+    }
+    
+    private String condenseUrl(String url) {
+        Method m;
+        String result;
+        try {
+            m = SpamBotImpl.class.getMethod("condenseUrl", String.class);
+            m.setAccessible(true);
+            result = (String) m.invoke(spam_bot, url);
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException("Couldn't access condenseUrl method", ex);
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("Couldn't access condenseUrl method", ex);
+        } catch (InvocationTargetException ex) {
+            throw new RuntimeException("Couldn't access condenseUrl method", ex);
+        } catch (NoSuchMethodException ex) {
+            throw new RuntimeException("Couldn't find condenseUrl method", ex);
+        } catch (SecurityException ex) {
+            throw new RuntimeException("Couldn't access condenseUrl method", ex);
+        }
+        
+        return result;
+    }
 }
