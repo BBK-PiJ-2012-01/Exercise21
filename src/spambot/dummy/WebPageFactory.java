@@ -36,6 +36,6 @@ public class WebPageFactory {
         if (test)
             return new DummyWebPage(url);
         else
-            return new WebPageImpl(url);
+            return new WebPageImpl(url, StreamFactory.getReal());
     }
 }

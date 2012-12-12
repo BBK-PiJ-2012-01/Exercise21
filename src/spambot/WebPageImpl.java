@@ -121,7 +121,7 @@ public class WebPageImpl implements WebPage {
 	}
 
 	public static void main (String[] args) throws MalformedURLException {
-		WebPageImpl w = new WebPageImpl("http://www.google.com");
+		WebPageImpl w = new WebPageImpl("http://www.google.com", StreamFactory.getReal());
 		w.launch();
 	}
 	public void launch() {
